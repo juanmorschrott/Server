@@ -4,6 +4,7 @@ import static com.playspace.config.Configuration.*;
 
 import java.util.Random;
 
+import com.playspace.exception.IncorrectUserIdException;
 import com.playspace.model.User;
 import com.playspace.repository.UserRepository;
 
@@ -47,8 +48,9 @@ public class LoginService {
 	 * 
 	 * @param userId
 	 * @return
+	 * @throws IncorrectUserIdException 
 	 */
-	public synchronized String getSessionKey(String userId) {
+	public synchronized String getSessionKey(String userId) throws IncorrectUserIdException {
 		User user = userRepository.findUserByUserId(userId);
 		if (user != null) {
 			if (!isValidSessionKey(user.getSessionKeyCreationTime())) {

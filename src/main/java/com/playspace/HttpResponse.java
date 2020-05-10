@@ -3,6 +3,8 @@ package com.playspace;
 public class HttpResponse {
 
 	private String content = "";
+	
+	private int status;
 
 	public String render() {
 		StringBuilder html = new StringBuilder();
@@ -21,6 +23,14 @@ public class HttpResponse {
 
 	public void setContent(String content) {
 		this.content = content;
+	}
+
+	public int getStatus() {
+		return status;
+	}
+
+	public void setStatus(int status) {
+		this.status = status;
 	}
 
 }
