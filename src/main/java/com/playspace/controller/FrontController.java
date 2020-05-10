@@ -17,28 +17,31 @@ public class FrontController implements HttpHandler {
 		HttpResponse httpResponse = null;
 		String response = null;
 		Controller controller = null;
-		
+
 		URI uri = httpExchange.getRequestURI();
-		
+
 		if (uri.getPath().contains("/login")) {
 			controller = LoginController.getInstance();
 			response = controller.doGet(httpExchange).render();
-			
-		} else if (uri.getPath().contains("/score") || uri.getPath().contains("/highscorelist")) {
+
+		} else if (uri.getPath().contains("/score")) {
 			controller = ScoreController.getInstance();
 			response = controller.doGet(httpExchange).render();
+
+		} else if (uri.getPath().contains("/highscorelist")) {
+			controller = ScoreController.getInstance();
+			response = controller.doPost(httpExchange).render();
 			
 		} else {
 			httpResponse = new HttpResponse();
 			httpResponse.setContent("Page not found");
-			response = httpResponse.render();			
+			response = httpResponse.render();
 		}
 
 		httpExchange.sendResponseHeaders(HTTP_STATUS_NOT_FOUND, response.getBytes().length);
 		OutputStream os = httpExchange.getResponseBody();
 		os.write(response.getBytes());
 		os.close();
-
 
 	}
 

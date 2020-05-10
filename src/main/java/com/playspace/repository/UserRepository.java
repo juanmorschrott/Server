@@ -7,7 +7,7 @@ import com.playspace.model.User;
 
 public class UserRepository {
 	
-	private UserRepository userRepository;
+	private static UserRepository userRepository;
 	
 	private static Map<String, User> users;
 
@@ -15,18 +15,18 @@ public class UserRepository {
 		users = new HashMap<>();
 	}
 	
-	public UserRepository getInstance() {
+	public static UserRepository getInstance() {
 		if (userRepository == null) {
 			userRepository = new UserRepository();
 		}
 		return userRepository;
 	}
 	
-	public User findUserByUserId(String userId) {
+	public synchronized User findUserByUserId(String userId) {
 		return users.get(userId);
 	}
 	
-	public User create(String userId, String sessionKey) {
+	public synchronized User create(String userId, String sessionKey) {
 		User u = new User();
 		u.setUserId(userId);
 		u.setSessionKey(sessionKey);
