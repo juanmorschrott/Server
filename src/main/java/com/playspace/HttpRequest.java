@@ -5,11 +5,11 @@ import java.util.List;
 
 import javax.xml.ws.spi.http.*;
 
-public class Request {
+public class HttpRequest {
 
 	private HttpExchange httpExchange;
 
-	public Request(HttpExchange httpExchange) {
+	public HttpRequest(HttpExchange httpExchange) {
 		this.httpExchange = httpExchange;
 	}
 		

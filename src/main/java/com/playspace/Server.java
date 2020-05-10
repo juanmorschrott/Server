@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.concurrent.Executors;
 
+import com.playspace.controller.FrontController;
 import com.sun.net.httpserver.HttpServer;
 
 public class Server {
