@@ -1,10 +1,11 @@
-package com.playspace.cache;
+package com.playspace.model;
 
 public class User {
 
 	private String userId;
 	private String sessionKey;
 	private long sessionKeyCreationTime;
+	private int score;
 
 	public String getUserId() {
 		return userId;
@@ -28,6 +29,14 @@ public class User {
 
 	public void setSessionKeyCreationTime(long sessionKeyCreationTime) {
 		this.sessionKeyCreationTime = sessionKeyCreationTime;
+	}
+
+	public int getScore() {
+		return score;
+	}
+
+	public void setScore(int score) {
+		this.score = score;
 	}
 
 }
