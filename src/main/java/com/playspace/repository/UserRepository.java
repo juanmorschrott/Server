@@ -9,7 +9,7 @@ public class UserRepository {
 	
 	private static UserRepository userRepository;
 	
-	private static Map<String, User> users;
+	private Map<String, User> users;
 
 	private UserRepository() {
 		users = new HashMap<>();

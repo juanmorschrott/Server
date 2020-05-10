@@ -14,7 +14,7 @@ public class LoginService {
 	private static LoginService loginService;
 
 	private LoginService() {
-		userRepository = userRepository.getInstance();
+		userRepository = UserRepository.getInstance();
 	}
 
 	public static LoginService getInstance() {
@@ -36,10 +36,10 @@ public class LoginService {
 		return user.getSessionKey();
 	}
 
-	public boolean isValidSessionKey(long startTime) {
+	public synchronized boolean isValidSessionKey(long startTime) {
 		long currentTime = System.currentTimeMillis();
 
-		return ((currentTime - startTime) * 1000) < SESSION_KEY_DURATION;
+		return ((currentTime - startTime) * 1000) > SESSION_KEY_DURATION;
 	}
 
 	public String generateSessionKey() {
