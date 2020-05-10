@@ -69,7 +69,7 @@ public class LoginService {
 	public synchronized boolean isValidSessionKey(long startTime) {
 		long currentTime = System.currentTimeMillis();
 
-		return ((currentTime - startTime) * 1000) > SESSION_KEY_DURATION;
+		return (currentTime - startTime) < SESSION_KEY_DURATION;
 	}
 
 	/**
