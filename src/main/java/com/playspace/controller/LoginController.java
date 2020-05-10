@@ -8,6 +8,8 @@ public class LoginController implements Controller {
 
 	private static LoginController loginController;
 	
+	private HttpExchange httpExchange;
+	
 	private LoginService service;
 	
 	private LoginController() {
@@ -22,19 +24,17 @@ public class LoginController implements Controller {
 	}
 	
 	@Override
-	public HttpResponse doGet(HttpExchange httpExchange) {
-		String userId = httpExchange.getRequestURI().getPath().split("/")[1];
+	public void init(HttpExchange httpExchange) {
+		this.httpExchange = httpExchange;
+	}
+	
+	public HttpResponse doGet() {
+		String userId = this.httpExchange.getRequestURI().getPath().split("/")[1];
 		
 		HttpResponse httpResponse = new HttpResponse();
 		httpResponse.setContent(service.getSessionKey(userId));
 		
 		return httpResponse;
-	}
-
-	@Override
-	public HttpResponse doPost(HttpExchange httpExchange) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 }

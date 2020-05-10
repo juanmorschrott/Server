@@ -1,6 +1,6 @@
 package com.playspace.service;
 
-import static com.playspace.config.Configuration.SESSION_KEY_DURATION;
+import static com.playspace.config.Configuration.*;
 
 import java.util.Random;
 
@@ -24,6 +24,30 @@ public class LoginService {
 		return loginService;
 	}
 	
+	/**
+	 * Check if given user is logged in.
+	 * 
+	 * @param userId
+	 * @return
+	 */
+	public synchronized boolean isLoggedUser(String userId) {
+		User user = userRepository.findUserByUserId(userId);
+		if (user != null) {
+			if (isValidSessionKey(user.getSessionKeyCreationTime())) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * Retrieves session key given a user id.
+	 * If the user is not logged in, it creates a new User
+	 * with a new session key.
+	 * 
+	 * @param userId
+	 * @return
+	 */
 	public synchronized String getSessionKey(String userId) {
 		User user = userRepository.findUserByUserId(userId);
 		if (user != null) {
@@ -36,19 +60,30 @@ public class LoginService {
 		return user.getSessionKey();
 	}
 
+	/**
+	 * Checks if more than configured time has passed since given time.
+	 * 
+	 * @param startTime
+	 * @return
+	 */
 	public synchronized boolean isValidSessionKey(long startTime) {
 		long currentTime = System.currentTimeMillis();
 
 		return ((currentTime - startTime) * 1000) > SESSION_KEY_DURATION;
 	}
 
+	/**
+	 * Generates a session key id form of a string without spaces
+	 * or 'strange' characters.
+	 * 
+	 * @return
+	 */
 	public String generateSessionKey() {
 		int leftLimit = 65; // letter 'A'
 		int rightLimit = 90; // letter 'Z'
-		int targetStringLength = 10;
 		Random random = new Random();
 
-		return random.ints(leftLimit, rightLimit + 1).limit(targetStringLength)
+		return random.ints(leftLimit, rightLimit + 1).limit(SESSION_KEY_LENGHT)
 				.collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append).toString();
 	}
 

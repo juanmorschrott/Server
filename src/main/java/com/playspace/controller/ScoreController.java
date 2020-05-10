@@ -1,6 +1,5 @@
 package com.playspace.controller;
 
-import com.playspace.HttpResponse;
 import com.sun.net.httpserver.HttpExchange;
 
 public class ScoreController implements Controller {
@@ -19,15 +18,8 @@ private static ScoreController scoreController;
 	}
 	
 	@Override
-	public HttpResponse doGet(HttpExchange httpExchange) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	public void init(HttpExchange httpExchange) {
 
-	@Override
-	public HttpResponse doPost(HttpExchange httpExchange) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 }

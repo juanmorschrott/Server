@@ -12,25 +12,31 @@ import com.sun.net.httpserver.HttpHandler;
 
 public class FrontController implements HttpHandler {
 
+	private LoginController loginController;
+	
+	private ScoreController scoreController;
+	
+	public FrontController() {
+		loginController = LoginController.getInstance();
+		scoreController = ScoreController.getInstance();
+	}	
+	
 	@Override
 	public void handle(HttpExchange httpExchange) throws IOException {
 		HttpResponse httpResponse = null;
 		String response = null;
-		Controller controller = null;
+
+		loginController.init(httpExchange);
+		scoreController.init(httpExchange);
 
 		URI uri = httpExchange.getRequestURI();
-
-		if (uri.getPath().contains("/login")) {
-			controller = LoginController.getInstance();
-			response = controller.doGet(httpExchange).render();
+		
+		if (uri.getPath().contains("/login")) {			
+			response = loginController.doGet().render();
 
 		} else if (uri.getPath().contains("/score")) {
-			controller = ScoreController.getInstance();
-			response = controller.doGet(httpExchange).render();
 
 		} else if (uri.getPath().contains("/highscorelist")) {
-			controller = ScoreController.getInstance();
-			response = controller.doPost(httpExchange).render();
 			
 		} else {
 			httpResponse = new HttpResponse();
