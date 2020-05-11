@@ -2,9 +2,26 @@
 
 This is just a really simple MVC based HTTP server.
 
-### Configuration
+### Configuration File
 
-You can modify server settings from the Configuration.java file.
+You can modify server settings from the Configuration.java file:
+
+```
+...
+├───src
+│   ├───main
+│   │   ├───java
+│   │   │   └───com
+│   │   │       └───playspace
+│   │   │           ├───config
+...
+```
+
+#### Config values:
+
+- PORT
+- SESSION_KEY_DURATION
+- SESSION_KEY_LENGTH
 
 ### Run tests
 
@@ -21,4 +38,4 @@ mvn exec:java
 
 ### Postman
 
-You will find a folder with some test requests.
+You will find a folder named Postman with some test requests.
