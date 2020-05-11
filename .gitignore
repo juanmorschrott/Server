@@ -29,4 +29,8 @@ dependency-reduced-pom.xml
 *.iws
 *.idea
 
+# Logs
+
+log/
+
 README.html

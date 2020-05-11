@@ -1,13 +1,17 @@
 package com.playspace.controller;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.playspace.HttpResponse;
 import com.playspace.config.Constants;
-import com.playspace.exception.BadParametersException;
 import com.playspace.exception.IncorrectUserIdException;
 import com.playspace.service.LoginService;
 import com.sun.net.httpserver.HttpExchange;
 
 public class LoginController implements Controller {
+
+	private static final Logger logger = LogManager.getLogger(LoginController.class);
 
 	private static LoginController loginController;
 
@@ -26,8 +30,10 @@ public class LoginController implements Controller {
 
 	@Override
 	public HttpResponse doGet(HttpExchange httpExchange) {
-		String userId;
+		logger.info("GET  /login");
+
 		HttpResponse httpResponse = new HttpResponse();
+		String userId;
 
 		try {
 			String[] params = httpExchange.getRequestURI().getPath().split("/");
@@ -36,15 +42,12 @@ public class LoginController implements Controller {
 				httpResponse.setContent(service.generateSession(userId));
 				httpResponse.setStatus(Constants.HTTP_STATUS_OK);
 			} else {
-				throw new BadParametersException("Bad request");
+				httpResponse.setStatus(Constants.HTTP_STATUS_BAD_REQUEST);
 			}
 
 		} catch (IncorrectUserIdException e) {
 			httpResponse.setContent(e.getMessage());
 			httpResponse.setStatus(Constants.HTTP_STATUS_SERVER_ERROR);
-		} catch (BadParametersException e) {
-			httpResponse.setContent(e.getMessage());
-			httpResponse.setStatus(Constants.HTTP_STATUS_BAD_REQUEST);
 		}
 
 		return httpResponse;

@@ -1,13 +1,13 @@
 package com.playspace.controller;
 
+import static com.playspace.config.Constants.GET;
 import static com.playspace.config.Constants.HTTP_STATUS_NOT_FOUND;
 import static com.playspace.config.Constants.NOT_FOUND_TEXT;
+import static com.playspace.config.Constants.POST;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.URI;
 
-import com.playspace.HttpRequest;
 import com.playspace.HttpResponse;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
@@ -27,28 +27,25 @@ public class FrontController implements HttpHandler {
 		HttpResponse httpResponse = null;
 		String response = null;
 		
-		URI uri = httpExchange.getRequestURI();
+		String path = httpExchange.getRequestURI().getPath();
 		String requestMethod = httpExchange.getRequestMethod();
 
-		if (uri.getPath().contains("/login") && requestMethod.equals("GET")) {
+		if (path.contains("/login") && requestMethod.equals(GET)) {
 			httpResponse = loginController.doGet(httpExchange);
-			response = httpResponse.render();
 
-		} else if (uri.getPath().contains("/score") && requestMethod.equals("POST")) {
+		} else if (path.contains("/score") && requestMethod.equals(POST)) {
 			httpResponse = scoreController.doPost(httpExchange);
-			response = httpResponse.render();
 			
-		} else if (uri.getPath().contains("/highscorelist") && requestMethod.equals("GET")) {
+		} else if (path.contains("/highscorelist") && requestMethod.equals(GET)) {
 			httpResponse = scoreController.doGet(httpExchange);
-			response = httpResponse.render();
 			
 		} else {
 			httpResponse = new HttpResponse();
 			httpResponse.setContent(NOT_FOUND_TEXT);
 			httpResponse.setStatus(HTTP_STATUS_NOT_FOUND);
-			response = httpResponse.render();
 		}
 
+		response = httpResponse.getContent();
 		httpExchange.sendResponseHeaders(httpResponse.getStatus(), response.getBytes().length);
 		OutputStream os = httpExchange.getResponseBody();
 		os.write(response.getBytes());

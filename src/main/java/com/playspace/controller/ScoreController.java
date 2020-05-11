@@ -10,19 +10,21 @@ import java.net.URLDecoder;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.playspace.HttpResponse;
 import com.playspace.config.Constants;
-import com.playspace.exception.BadParametersException;
 import com.playspace.repository.ScoreRepository;
 import com.playspace.service.LoginService;
 import com.sun.net.httpserver.HttpExchange;
 
 public class ScoreController implements Controller {
+	
+	private static final Logger logger = LogManager.getLogger(ScoreController.class);
 
 	private static ScoreController scoreController;
-
 	private LoginService loginService;
-
 	private ScoreRepository scoreRepository;
 
 	private ScoreController() {
@@ -30,7 +32,7 @@ public class ScoreController implements Controller {
 		scoreRepository = ScoreRepository.getInstance();
 	}
 
-	public static ScoreController getInstance() {
+	public static synchronized ScoreController getInstance() {
 		if (scoreController == null) {
 			scoreController = new ScoreController();
 		}
@@ -39,22 +41,21 @@ public class ScoreController implements Controller {
 
 	@Override
 	public HttpResponse doGet(HttpExchange httpExchange) {
+		logger.info("GET  /highscorelist");
+		
 		HttpResponse httpResponse = new HttpResponse();
 
 		try {
 			Integer levelId = Integer.valueOf(httpExchange.getRequestURI().getPath().split("/")[1]);
-
-			if (levelId != null) {
-				String scoresCSV = scoreRepository.findHighestScoresByLevelId(levelId);
-				if (!scoresCSV.isEmpty()) {
-					httpResponse.setContent(scoresCSV);
-				}
-			} else {
-				httpResponse.setContent("Bad request");
-				httpResponse.setStatus(Constants.HTTP_STATUS_BAD_REQUEST);
+			String scoresCSV = scoreRepository.findHighestScoresByLevelId(levelId);
+			if (!scoresCSV.isEmpty()) {
+				httpResponse.setContent(scoresCSV);
 			}
-		} catch (Exception e) {
-			httpResponse.setContent(e.getMessage());
+		} catch (NumberFormatException e) {
+			httpResponse.setContent("Bad request");
+			httpResponse.setStatus(Constants.HTTP_STATUS_BAD_REQUEST);
+		} catch (Exception e) {			
+			httpResponse.setContent(e.toString());
 			httpResponse.setStatus(Constants.HTTP_STATUS_SERVER_ERROR);
 		}
 		return httpResponse;
@@ -62,6 +63,8 @@ public class ScoreController implements Controller {
 
 	@Override
 	public HttpResponse doPost(HttpExchange httpExchange) {
+		logger.info("POST /score");
+		
 		HttpResponse httpResponse = new HttpResponse();
 
 		try {
@@ -69,9 +72,10 @@ public class ScoreController implements Controller {
 			String sessionKey = splitQueryParams(httpExchange.getRequestURI()).get("sessionKey");
 			String payload = parseBody(httpExchange.getRequestBody());
 
-			if (levelId != null && !sessionKey.isEmpty() && !payload.isEmpty()
-					&& loginService.isLoggedUserSessionKey(sessionKey)) {
-				System.out.println("Level id: " + levelId + ", Session key: " + sessionKey + ", Points: " + payload);
+			if (loginService.isLoggedUserSessionKey(sessionKey)) {
+				logger.info("Level id: " + levelId + ", Session key: " + sessionKey + ", Points: " + payload);
+				
+				httpResponse.setStatus(Constants.HTTP_STATUS_OK);
 			}
 		} catch (IOException e) {
 			httpResponse.setStatus(Constants.HTTP_STATUS_BAD_REQUEST);

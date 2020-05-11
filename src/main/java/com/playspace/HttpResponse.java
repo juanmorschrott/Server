@@ -6,17 +6,6 @@ public class HttpResponse {
 	
 	private int status;
 
-	public String render() {
-		StringBuilder html = new StringBuilder();
-		html.append("<!doctype html>")
-			.append("<body style='padding-left:1em; font-size: 2em; font-family: monospace;'>")
-			.append("<p>" + this.content + "</p>")
-			.append("</body>")
-			.append("</html>");
-
-		return html.toString();
-	}
-
 	public String getContent() {
 		return content;
 	}

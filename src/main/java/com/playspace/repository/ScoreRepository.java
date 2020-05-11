@@ -1,8 +1,9 @@
 package com.playspace.repository;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import com.playspace.model.Score;
@@ -11,11 +12,11 @@ public class ScoreRepository {
 
 	private static ScoreRepository scoreRepository;
 
-	private Set<Score> scores;
+	private List<Score> scores;
 
 	private ScoreRepository() {
 		// init mock data
-		scores = new HashSet<>();
+		scores = Collections.synchronizedList(new ArrayList<>());
 
 		Score s1 = new Score();
 		s1.setLevel(1);
@@ -36,7 +37,7 @@ public class ScoreRepository {
 		scores.add(s3);
 	}
 
-	public static ScoreRepository getInstance() {
+	public static synchronized ScoreRepository getInstance() {
 		if (scoreRepository == null) {
 			scoreRepository = new ScoreRepository();
 		}
@@ -44,7 +45,8 @@ public class ScoreRepository {
 	}
 
 	public synchronized String findHighestScoresByLevelId(int levelId) {
-		Set<Score> levelScores = scores.stream().filter(score -> score.getLevel() == levelId).collect(Collectors.toSet());
+		List<Score> levelScores = scores.stream().filter(score -> score.getLevel() == levelId).collect(Collectors.toList());
+
 		String userScore = "";
 		
 		for (Score score : levelScores) {

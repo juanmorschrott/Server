@@ -1,8 +1,8 @@
 package com.playspace.service;
 
-import static com.playspace.config.Configuration.*;
+import static com.playspace.config.Configuration.SESSION_KEY_DURATION;
+import static com.playspace.config.Configuration.SESSION_KEY_LENGHT;
 
-import java.util.Map;
 import java.util.Random;
 
 import com.playspace.exception.IncorrectUserIdException;
@@ -32,7 +32,7 @@ public class LoginService {
 	 * @param user
 	 * @return boolean
 	 */
-	public synchronized boolean isLoggedUser(User user) {
+	public boolean isLoggedUser(User user) {
 		User u = userRepository.findUserByUserId(user.getUserId());
 		if (u != null && isValidSessionKey(user.getSessionKeyCreationTime())) {
 			return true;
@@ -46,7 +46,7 @@ public class LoginService {
 	 * @param userId
 	 * @return
 	 */
-	public synchronized boolean isLoggedUserSessionKey(String sessionKey) {
+	public boolean isLoggedUserSessionKey(String sessionKey) {
 		User u = userRepository.findUserBySessionId(sessionKey);
 
 		return isValidSessionKey(u.getSessionKeyCreationTime());
@@ -60,7 +60,7 @@ public class LoginService {
 	 * @return
 	 * @throws IncorrectUserIdException
 	 */
-	public synchronized String generateSession(String userId) throws IncorrectUserIdException {
+	public String generateSession(String userId) throws IncorrectUserIdException {
 		User user = userRepository.findUserByUserId(userId);
 		if (user != null) {
 			if (!isValidSessionKey(user.getSessionKeyCreationTime())) {
@@ -82,7 +82,7 @@ public class LoginService {
 	 * @param startTime
 	 * @return
 	 */
-	public synchronized boolean isValidSessionKey(long startTime) {
+	public boolean isValidSessionKey(long startTime) {
 		long currentTime = System.currentTimeMillis();
 
 		return (currentTime - startTime) < SESSION_KEY_DURATION;

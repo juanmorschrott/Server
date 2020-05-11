@@ -1,8 +1,7 @@
 package com.playspace.repository;
 
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import com.playspace.exception.IncorrectUserIdException;
@@ -15,7 +14,7 @@ public class UserRepository {
 	private Set<User> users;
 
 	private UserRepository() {
-		users = new HashSet<>();
+		users = Collections.synchronizedSet(new HashSet<>());
 	}
 
 	public static UserRepository getInstance() {
@@ -25,6 +24,9 @@ public class UserRepository {
 		return userRepository;
 	}
 
+	/**
+	 * Get all users;
+	 */
 	public synchronized Set<User> findAll() {
 		return this.users;
 	}
@@ -42,7 +44,7 @@ public class UserRepository {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Find user by session key.
 	 * 
@@ -50,10 +52,7 @@ public class UserRepository {
 	 * @return
 	 */
 	public synchronized User findUserBySessionId(String sessionKey) {
-		return userRepository.findAll()
-				.stream()
-				.filter(user -> user.getSessionKey().equals(sessionKey))
-				.findFirst().get();
+		return users.stream().filter(user -> user.getSessionKey().equals(sessionKey)).findFirst().get();
 	}
 
 	/**
