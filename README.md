@@ -31,6 +31,14 @@ mvn test
 
 ### Run server
 
+You can run the jar file included:
+
+```
+java -cp Server-1.0-SNAPSHOT.jar "com.playspace.Server"
+```
+
+Or use the exec maven plugin included:
+
 ```
 mvn compile
 mvn exec:java
