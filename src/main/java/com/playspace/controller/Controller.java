@@ -5,6 +5,8 @@ import com.sun.net.httpserver.HttpExchange;
 
 public interface Controller {
 	
-	void init(HttpExchange httpExchange);
+	HttpResponse doGet(HttpExchange httpExchange);
+	
+	HttpResponse doPost(HttpExchange httpExchange);
 	
 }

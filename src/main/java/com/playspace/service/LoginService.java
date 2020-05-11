@@ -2,6 +2,7 @@ package com.playspace.service;
 
 import static com.playspace.config.Configuration.*;
 
+import java.util.Map;
 import java.util.Random;
 
 import com.playspace.exception.IncorrectUserIdException;
@@ -11,7 +12,7 @@ import com.playspace.repository.UserRepository;
 public class LoginService {
 
 	private UserRepository userRepository;
-	
+
 	private static LoginService loginService;
 
 	private LoginService() {
@@ -26,38 +27,51 @@ public class LoginService {
 	}
 	
 	/**
-	 * Check if given user is logged in.
+	 * Check if user is currently logged in.
 	 * 
-	 * @param userId
-	 * @return
+	 * @param user
+	 * @return boolean
 	 */
-	public synchronized boolean isLoggedUser(String userId) {
-		User user = userRepository.findUserByUserId(userId);
-		if (user != null) {
-			if (isValidSessionKey(user.getSessionKeyCreationTime())) {
-				return true;
-			}
+	public synchronized boolean isLoggedUser(User user) {
+		User u = userRepository.findUserByUserId(user.getUserId());
+		if (u != null && isValidSessionKey(user.getSessionKeyCreationTime())) {
+			return true;
 		}
 		return false;
 	}
-	
+
 	/**
-	 * Retrieves session key given a user id.
-	 * If the user is not logged in, it creates a new User
-	 * with a new session key.
+	 * Check if a user is logged given a session key.
 	 * 
 	 * @param userId
 	 * @return
-	 * @throws IncorrectUserIdException 
 	 */
-	public synchronized String getSessionKey(String userId) throws IncorrectUserIdException {
+	public synchronized boolean isLoggedUserSessionKey(String sessionKey) {
+		User u = userRepository.findUserBySessionId(sessionKey);
+
+		return isValidSessionKey(u.getSessionKeyCreationTime());
+	}
+
+	/**
+	 * Generates a new session key given an existent user. If the user is not logged
+	 * in, it creates a new User with a new session key.
+	 * 
+	 * @param userId
+	 * @return
+	 * @throws IncorrectUserIdException
+	 */
+	public synchronized String generateSession(String userId) throws IncorrectUserIdException {
 		User user = userRepository.findUserByUserId(userId);
 		if (user != null) {
 			if (!isValidSessionKey(user.getSessionKeyCreationTime())) {
 				user.setSessionKey(generateSessionKey());
 			}
 		} else {
-			user = userRepository.create(userId, generateSessionKey());
+			user = new User();
+			user.setUserId(userId);
+			user.setSessionKey(generateSessionKey());
+			user.setSessionKeyCreationTime(System.currentTimeMillis());
+			user = userRepository.create(user);
 		}
 		return user.getSessionKey();
 	}
@@ -75,8 +89,8 @@ public class LoginService {
 	}
 
 	/**
-	 * Generates a session key id form of a string without spaces
-	 * or 'strange' characters.
+	 * Generates a session key id form of a string without spaces or 'strange'
+	 * characters.
 	 * 
 	 * @return
 	 */
@@ -87,6 +101,22 @@ public class LoginService {
 
 		return random.ints(leftLimit, rightLimit + 1).limit(SESSION_KEY_LENGHT)
 				.collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append).toString();
+	}
+
+	public UserRepository getUserRepository() {
+		return userRepository;
+	}
+
+	public void setUserRepository(UserRepository userRepository) {
+		this.userRepository = userRepository;
+	}
+
+	public static LoginService getLoginService() {
+		return loginService;
+	}
+
+	public static void setLoginService(LoginService loginService) {
+		LoginService.loginService = loginService;
 	}
 
 }

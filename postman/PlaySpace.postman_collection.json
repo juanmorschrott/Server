@@ -1,0 +1,85 @@
+{
+	"info": {
+		"_postman_id": "85c21804-ccad-4c97-a334-4c2b1c52e1ff",
+		"name": "PlaySpace",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Login",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "federico",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/login",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Score",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "1500"
+				},
+				"url": {
+					"raw": "localhost:8080/2/score?sessionKey=EDGGCMLLAB",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"2",
+						"score"
+					],
+					"query": [
+						{
+							"key": "sessionKey",
+							"value": "EDGGCMLLAB"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Highscore list",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/2/highscorelist",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"2",
+						"highscorelist"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}

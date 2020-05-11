@@ -1,7 +1,9 @@
 package com.playspace.repository;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import com.playspace.exception.IncorrectUserIdException;
 import com.playspace.model.User;
@@ -10,10 +12,10 @@ public class UserRepository {
 
 	private static UserRepository userRepository;
 
-	private Map<String, User> users;
+	private Set<User> users;
 
 	private UserRepository() {
-		users = new HashMap<>();
+		users = new HashSet<>();
 	}
 
 	public static UserRepository getInstance() {
@@ -23,6 +25,10 @@ public class UserRepository {
 		return userRepository;
 	}
 
+	public synchronized Set<User> findAll() {
+		return this.users;
+	}
+
 	/**
 	 * Find user by id.
 	 * 
@@ -30,7 +36,24 @@ public class UserRepository {
 	 * @return
 	 */
 	public synchronized User findUserByUserId(String userId) {
-		return users.get(userId);
+		for (User u : this.users) {
+			if (u.getUserId().equals(userId))
+				return u;
+		}
+		return null;
+	}
+	
+	/**
+	 * Find user by session key.
+	 * 
+	 * @param sessionKey
+	 * @return
+	 */
+	public synchronized User findUserBySessionId(String sessionKey) {
+		return userRepository.findAll()
+				.stream()
+				.filter(user -> user.getSessionKey().equals(sessionKey))
+				.findFirst().get();
 	}
 
 	/**
@@ -39,19 +62,16 @@ public class UserRepository {
 	 * @param userId
 	 * @param sessionKey
 	 * @return
-	 * @throws IncorrectUserIdException 
+	 * @throws IncorrectUserIdException
 	 */
-	public synchronized User create(String userId, String sessionKey) throws IncorrectUserIdException {
-		if (userId.isEmpty() || userId.length() > 16 || sessionKey.isEmpty()) {
+	public synchronized User create(User user) throws IncorrectUserIdException {
+		if (user.getUserId() == null || user.getUserId().isEmpty() || user.getSessionKey() == null
+				|| user.getSessionKey().isEmpty() || user.getSessionKey().length() > 16) {
 			throw new IncorrectUserIdException("You have not provided the correct parameters to create a user.");
 		}
-		User u = new User();
-		u.setUserId(userId);
-		u.setSessionKey(sessionKey);
-		u.setSessionKeyCreationTime(System.currentTimeMillis());
-		users.put(userId, u);
+		users.add(user);
 
-		return u;
+		return user;
 	}
 
 }

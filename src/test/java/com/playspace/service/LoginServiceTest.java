@@ -8,19 +8,37 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.playspace.config.Configuration;
+import com.playspace.exception.IncorrectUserIdException;
+import com.playspace.model.User;
+import com.playspace.repository.UserRepository;
 
 public class LoginServiceTest {
 
 	private LoginService loginService;
 	
+	private UserRepository userRepository;
+	
 	@Before
 	public void init() {
-		loginService = LoginService.getInstance(); 
+		loginService = LoginService.getInstance();
+		userRepository = UserRepository.getInstance();
+		loginService.setUserRepository(userRepository);
 	}
 	
 	@Test
 	public void login_service_instance_test() {
 		assertNotNull(loginService);
+	}
+	
+	@Test
+	public void is_logged_user_test() throws IncorrectUserIdException {
+		User user = new User();
+		user.setUserId("4711");
+		user.setSessionKey(loginService.generateSessionKey());
+		user.setSessionKeyCreationTime(System.currentTimeMillis());		
+		userRepository.create(user);
+		
+		assertTrue(loginService.isLoggedUserSessionKey(user.getSessionKey()));
 	}
 	
 	@Test
