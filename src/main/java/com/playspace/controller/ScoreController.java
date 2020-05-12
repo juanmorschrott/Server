@@ -50,6 +50,9 @@ public class ScoreController implements Controller {
 			String scoresCSV = scoreRepository.findHighestScoresByLevelId(levelId);
 			if (!scoresCSV.isEmpty()) {
 				httpResponse.setContent(scoresCSV);
+				httpResponse.setStatus(Constants.HTTP_STATUS_OK);
+			} else {
+				httpResponse.setStatus(Constants.HTTP_STATUS_NOT_FOUND);
 			}
 		} catch (NumberFormatException e) {
 			httpResponse.setContent("Bad request");
