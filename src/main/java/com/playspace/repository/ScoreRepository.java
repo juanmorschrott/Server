@@ -2,7 +2,6 @@ package com.playspace.repository;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,7 +15,7 @@ public class ScoreRepository {
 
 	private ScoreRepository() {
 		// init mock data
-		scores = Collections.synchronizedList(new ArrayList<>());
+		scores = new ArrayList<>();
 
 		Score s1 = new Score();
 		s1.setLevel(1);

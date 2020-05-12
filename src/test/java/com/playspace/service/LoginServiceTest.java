@@ -33,7 +33,7 @@ public class LoginServiceTest {
 	@Test
 	public void is_logged_user_test() throws IncorrectUserIdException {
 		User user = new User();
-		user.setUserId("4711");
+		user.setUserId(4711);
 		user.setSessionKey(loginService.generateSessionKey());
 		user.setSessionKeyCreationTime(System.currentTimeMillis());		
 		userRepository.create(user);

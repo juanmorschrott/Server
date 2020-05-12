@@ -2,16 +2,16 @@ package com.playspace.model;
 
 public class User {
 
-	private String userId;
+	private Integer userId;
 	private String sessionKey;
 	private long sessionKeyCreationTime;
 	private int score;
 
-	public String getUserId() {
+	public Integer getUserId() {
 		return userId;
 	}
 
-	public void setUserId(String userId) {
+	public void setUserId(Integer userId) {
 		this.userId = userId;
 	}
 

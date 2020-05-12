@@ -76,6 +76,10 @@ public class ScoreController implements Controller {
 				logger.info("Level id: " + levelId + ", Session key: " + sessionKey + ", Points: " + payload);
 				
 				httpResponse.setStatus(Constants.HTTP_STATUS_OK);
+			} else {
+				logger.warn("Unauthorized access attempt");
+
+				httpResponse.setStatus(Constants.HTTP_STATUS_UNAUTHORIZED);
 			}
 		} catch (IOException e) {
 			httpResponse.setStatus(Constants.HTTP_STATUS_BAD_REQUEST);

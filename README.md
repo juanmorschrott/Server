@@ -34,7 +34,7 @@ mvn test
 You can run the jar file included:
 
 ```
-java -cp Server-1.0-SNAPSHOT.jar "com.playspace.Server"
+java -cp Server-1.0-SNAPSHOT-jar-with-dependencies.jar "com.playspace.Server"
 ```
 
 Or use the exec maven plugin included:

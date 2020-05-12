@@ -33,18 +33,15 @@ public class LoginController implements Controller {
 		logger.info("GET  /login");
 
 		HttpResponse httpResponse = new HttpResponse();
-		String userId;
 
 		try {
-			String[] params = httpExchange.getRequestURI().getPath().split("/");
-			if (params.length > 0) {
-				userId = params[1];
-				httpResponse.setContent(service.generateSession(userId));
-				httpResponse.setStatus(Constants.HTTP_STATUS_OK);
-			} else {
-				httpResponse.setStatus(Constants.HTTP_STATUS_BAD_REQUEST);
-			}
+			Integer userId = Integer.valueOf(httpExchange.getRequestURI().getPath().split("/")[1]);
+			httpResponse.setContent(service.generateSession(userId));
+			httpResponse.setStatus(Constants.HTTP_STATUS_OK);
 
+		} catch (NumberFormatException e) {
+			httpResponse.setContent("Bad request");
+			httpResponse.setStatus(Constants.HTTP_STATUS_BAD_REQUEST);
 		} catch (IncorrectUserIdException e) {
 			httpResponse.setContent(e.getMessage());
 			httpResponse.setStatus(Constants.HTTP_STATUS_SERVER_ERROR);

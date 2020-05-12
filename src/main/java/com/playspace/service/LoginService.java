@@ -32,7 +32,7 @@ public class LoginService {
 	 * @param user
 	 * @return boolean
 	 */
-	public boolean isLoggedUser(User user) {
+	public synchronized boolean isLoggedUser(User user) {
 		User u = userRepository.findUserByUserId(user.getUserId());
 		if (u != null && isValidSessionKey(user.getSessionKeyCreationTime())) {
 			return true;
@@ -46,10 +46,12 @@ public class LoginService {
 	 * @param userId
 	 * @return
 	 */
-	public boolean isLoggedUserSessionKey(String sessionKey) {
+	public synchronized boolean isLoggedUserSessionKey(String sessionKey) {
 		User u = userRepository.findUserBySessionId(sessionKey);
-
-		return isValidSessionKey(u.getSessionKeyCreationTime());
+		if (u != null) {
+			return isValidSessionKey(u.getSessionKeyCreationTime());
+		}
+		return false;
 	}
 
 	/**
@@ -60,7 +62,7 @@ public class LoginService {
 	 * @return
 	 * @throws IncorrectUserIdException
 	 */
-	public String generateSession(String userId) throws IncorrectUserIdException {
+	public synchronized String generateSession(int userId) throws IncorrectUserIdException {
 		User user = userRepository.findUserByUserId(userId);
 		if (user != null) {
 			if (!isValidSessionKey(user.getSessionKeyCreationTime())) {

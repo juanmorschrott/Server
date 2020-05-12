@@ -1,6 +1,5 @@
 package com.playspace.repository;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -14,7 +13,7 @@ public class UserRepository {
 	private Set<User> users;
 
 	private UserRepository() {
-		users = Collections.synchronizedSet(new HashSet<>());
+		users = new HashSet<>();
 	}
 
 	public static UserRepository getInstance() {
@@ -37,9 +36,9 @@ public class UserRepository {
 	 * @param userId
 	 * @return
 	 */
-	public synchronized User findUserByUserId(String userId) {
+	public synchronized User findUserByUserId(int userId) {
 		for (User u : this.users) {
-			if (u.getUserId().equals(userId))
+			if (u.getUserId() == userId)
 				return u;
 		}
 		return null;
@@ -52,7 +51,12 @@ public class UserRepository {
 	 * @return
 	 */
 	public synchronized User findUserBySessionId(String sessionKey) {
-		return users.stream().filter(user -> user.getSessionKey().equals(sessionKey)).findFirst().get();
+		for (User u : this.users) {
+			if (u.getSessionKey().equals(sessionKey)) {
+				return u;
+			}
+		}
+		return null;
 	}
 
 	/**
@@ -64,8 +68,8 @@ public class UserRepository {
 	 * @throws IncorrectUserIdException
 	 */
 	public synchronized User create(User user) throws IncorrectUserIdException {
-		if (user.getUserId() == null || user.getUserId().isEmpty() || user.getSessionKey() == null
-				|| user.getSessionKey().isEmpty() || user.getSessionKey().length() > 16) {
+		if (user.getUserId() == null || user.getSessionKey() == null || user.getSessionKey().isEmpty()
+				|| user.getSessionKey().length() > 16) {
 			throw new IncorrectUserIdException("You have not provided the correct parameters to create a user.");
 		}
 		users.add(user);
