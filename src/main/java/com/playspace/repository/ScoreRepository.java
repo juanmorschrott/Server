@@ -43,7 +43,7 @@ public class ScoreRepository {
 		return scoreRepository;
 	}
 
-	public synchronized String findHighestScoresByLevelId(int levelId) {
+	public String findHighestScoresByLevelId(int levelId) {
 		List<Score> levelScores = scores.stream().filter(score -> score.getLevel() == levelId).collect(Collectors.toList());
 
 		String userScore = "";

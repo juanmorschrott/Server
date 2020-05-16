@@ -47,6 +47,8 @@ public class LoginController implements Controller {
 			httpResponse.setStatus(Constants.HTTP_STATUS_SERVER_ERROR);
 		}
 
+		logger.info("Response: " + httpResponse.getStatus() + " " + httpResponse.getContent());
+
 		return httpResponse;
 	}
 

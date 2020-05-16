@@ -16,7 +16,7 @@ public class UserRepository {
 		users = new HashSet<>();
 	}
 
-	public static UserRepository getInstance() {
+	public static synchronized UserRepository getInstance() {
 		if (userRepository == null) {
 			userRepository = new UserRepository();
 		}
@@ -26,7 +26,7 @@ public class UserRepository {
 	/**
 	 * Get all users;
 	 */
-	public synchronized Set<User> findAll() {
+	public Set<User> findAll() {
 		return this.users;
 	}
 
@@ -36,7 +36,7 @@ public class UserRepository {
 	 * @param userId
 	 * @return
 	 */
-	public synchronized User findUserByUserId(int userId) {
+	public User findUserByUserId(int userId) {
 		for (User u : this.users) {
 			if (u.getUserId() == userId)
 				return u;
@@ -50,7 +50,7 @@ public class UserRepository {
 	 * @param sessionKey
 	 * @return
 	 */
-	public synchronized User findUserBySessionId(String sessionKey) {
+	public User findUserBySessionId(String sessionKey) {
 		for (User u : this.users) {
 			if (u.getSessionKey().equals(sessionKey)) {
 				return u;
@@ -67,7 +67,7 @@ public class UserRepository {
 	 * @return
 	 * @throws IncorrectUserIdException
 	 */
-	public synchronized User create(User user) throws IncorrectUserIdException {
+	public User create(User user) throws IncorrectUserIdException {
 		if (user.getUserId() == null || user.getSessionKey() == null || user.getSessionKey().isEmpty()
 				|| user.getSessionKey().length() > 16) {
 			throw new IncorrectUserIdException("You have not provided the correct parameters to create a user.");

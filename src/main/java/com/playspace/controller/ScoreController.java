@@ -10,14 +10,14 @@ import java.net.URLDecoder;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.playspace.HttpResponse;
 import com.playspace.config.Constants;
 import com.playspace.repository.ScoreRepository;
 import com.playspace.service.LoginService;
 import com.sun.net.httpserver.HttpExchange;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class ScoreController implements Controller {
 	
@@ -61,6 +61,9 @@ public class ScoreController implements Controller {
 			httpResponse.setContent(e.toString());
 			httpResponse.setStatus(Constants.HTTP_STATUS_SERVER_ERROR);
 		}
+
+		logger.info("Response: " + httpResponse.getStatus() + " " + httpResponse.getContent());
+
 		return httpResponse;
 	}
 
@@ -84,9 +87,13 @@ public class ScoreController implements Controller {
 
 				httpResponse.setStatus(Constants.HTTP_STATUS_UNAUTHORIZED);
 			}
+
 		} catch (IOException e) {
 			httpResponse.setStatus(Constants.HTTP_STATUS_BAD_REQUEST);
 		}
+
+		logger.info("Response: " + httpResponse.getStatus() + " " + httpResponse.getContent());
+
 		return httpResponse;
 	}
 
