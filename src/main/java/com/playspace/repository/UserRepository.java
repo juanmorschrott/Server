@@ -72,9 +72,13 @@ public class UserRepository {
 				|| user.getSessionKey().length() > 16) {
 			throw new IncorrectUserIdException("You have not provided the correct parameters to create a user.");
 		}
-		users.add(user);
-
-		return user;
+		User u = findUserByUserId(user.getUserId());
+		if (u != null) {
+			return u;
+		} else {
+			users.add(user);
+			return user;
+		}
 	}
 
 }
